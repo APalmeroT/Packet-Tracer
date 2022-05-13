@@ -1,0 +1,64 @@
+direccionamiento //
+int loopback 0
+ip add 192.168.1.1 255.255.255.0
+no shutdown
+
+int loopback 1
+ip add 12.168.2.1 255.255.255.0
+no shutdown
+
+int g0/0/0
+ip add 200.200.1.1 255.255.255.0
+no shutdown
+
+int g0/0/1
+ip add 200.200.2.1 255.255.255.0
+no shutdown
+
+r2
+
+int loopback 0
+ip add 10.10.1.1 255.255.255.0
+no shutdown
+
+int loopback 1
+ip add 10.10.2.1 255.255.255.0
+no shutdown
+
+int g0/0/0
+ip add 200.200.1.2 255.255.255.0
+no shutdown
+
+int g0/0/1
+ip add 200.200.3.1 255.255.255.0
+no shutdown
+
+r3
+
+int loopback 0
+ip add 172.16.1.1 255.255.255.0
+no shutdown
+
+int loopback 1
+ip add 172.16.2.1 255.255.255.0
+no shutdown
+
+int g0/0/0
+ip add 200.200.2.2 255.255.255.0
+no shutdown
+
+int g0/0/1
+ip add 200.200.3.2 255.255.255.0
+no shutdown
+
+//enrutamiento
+****
+9 redes 
+4 conectadas
+5 estaticaas
+****
+ip route 10.10.1.0 255.255.255.0 200.200.1.2
+ip route 10.10.2.0 255.255.255.0 200.200.1.2
+ip route 200.200.3.0 255.255.255.0 200.200.1.2
+ip route 172.16.1.0 255.255.255.0 200.200.2.2
+ip route 172.16.2.0 255.255.255.0 200.200.2.2
