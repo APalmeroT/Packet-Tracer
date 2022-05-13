@@ -1,0 +1,235 @@
+SW2
+int range fa0/22-24
+switchport mode access
+switchport access vlan 2
+
+int range fa0/19-21
+switchport mode access
+switchport access vlan 4
+
+sw3
+int range fa0/19-24
+switchport mode access
+switchport access vlan 6
+
+sw4
+int range fa0/22-24
+switchport mode access
+switchport access vlan 8
+
+configuracion de enlaces troncales
+SW1
+int range fa0/1-4, g0/1
+sw mode trunk
+sw trunk native vlan 110
+sw trunk allowed vlan 2,4,6,8,100,110
+sw non
+
+SW2
+int range fa0/1-3
+sw mode trunk
+sw trunk native vlan 110
+sw trunk allowed vlan 2,4,6,8,100,110
+sw non
+
+SW3
+int range fa0/1-2
+sw mode trunk
+sw trunk native vlan 110
+sw trunk allowed vlan 2,4,6,8,100,110
+sw non
+
+SW4
+int range fa0/1-2
+sw mode trunk
+sw trunk native vlan 110
+sw trunk allowed vlan 2,4,6,8,100,110
+sw non
+
+configurar enrutamiento entre vlans 
+int g0/0/0.2
+enca dot1q 2
+ip address 172.16.1.190 255.255.255.192
+
+int g0/0/0.4
+enca dot1q 4
+ip address 172.16.1.222 255.255.255.224
+
+int g0/0/0.6
+enca dot1q 6
+ip address 172.16.0.254 255.255.255.0
+
+int g0/0/0.8
+enca dot1q 8
+ip address 172.16.1.126 255.255.255.128
+
+int g0/0/0.100
+enca dot1q 100
+ip address 172.16.1.238 255.255.255.240
+
+int g0/0/0
+no shutdown
+
+direccionamiento ipv4
+
+sw1
+int vlan 100
+ip address 172.16.1.255 255.255.255.240
+no shutdown
+ip default gateway 172.16.1.238
+
+sw2
+int vlan 100
+ip address 172.16.1.226 255.255.255.240
+no shutdown
+ip default gateway 172.16.1.238
+
+sw3
+int vlan 100
+ip address 172.16.1.227 255.255.255.240
+no shutdown
+ip default gateway 172.16.1.238
+
+sw4
+int vlan 100
+ip address 172.16.1.228 255.255.255.240
+no shutdown
+ip default gateway 172.16.1.238
+
+configurar dhcp en el router
+
+ip dhcp excluded-address 172.16.0.254
+
+ip dhcp pool VLANG_USUARIOS
+network 172.16.0.0 255.255.255.0
+default-router 172.16.0.254
+dns 192.16.1.129
+
+ip dhcp excluded-address 172.16.1.126
+
+ip dhcp pool VLANG_DIRECCION
+network 172.16.1.0 255.255.255.128
+default-router 172.16.1.126
+dns 192.16.1.129
+
+
+8.ethernetchanel
+SW1
+int range fa0/1-2
+int port-channel 1
+switchport mode trunk 
+switchport trunk native vlan 110
+switchport trunk allowed vlan 2,4,6,8,100,110
+no shut
+
+ sh ethernetchannel port-chanel
+
+
+
+9.SW1
+int g0/2
+sw mode trunk
+sw trun native vlan 110
+sw trunk allowed vlan 2,4,6,8,100,110
+sw non
+
+
+
+CORE
+int g0/0/0.2
+enca dot1q 2
+ip address 172.16.1.190 255.255.255.192
+
+int g0/0/0.4
+enca dot1q 4
+ip address 172.16.1.222 255.255.255.224
+
+int g0/0/0.6
+enca dot1q 6
+ip address 172.16.0.254 255.255.255.0
+
+int g0/0/0.8
+enca dot1q 8
+ip address 172.16.1.126 255.255.255.128
+
+int g0/0/0.100
+enca dot1q 100
+ip address 172.16.1.138 255.255.255.240
+ 
+
+CORE 2
+int g0/0/0.2
+enca dot1q 2
+ip address 172.16.1.188 255.255.255.192
+
+int g0/0/0.4
+enca dot1q 4
+ip address 172.16.1.220 255.255.255.224
+
+int g0/0/0.6
+enca dot1q 6
+ip address 172.16.0.252 255.255.255.0
+
+int g0/0/0.8
+enca dot1q 8
+ip address 172.16.1.124 255.255.255.128
+
+int g0/0/0.100
+enca dot1q 100
+ip address 172.16.1.236 255.255.255.240
+ 
+
+- CONFIGURAR HSRP pra router virtual
+int g0/0/0.2
+standby 2 ip 172.16.1.190
+standby 2 priority 102
+
+standby 2 preempt
+standby 2 track g0/0/1
+
+int g0/0/0.4
+standby 4 ip 172.16.1.222
+standby 4 priority 102
+standby 4 preempt
+standby 4 track g0/0/1
+
+int g0/0/0.6
+standby 6 ip 172.16.0.254
+standby 6 priority 102
+standby 6 preempt
+standby 6 track g0/0/1
+
+int g0/0/0.8
+standby 8 ip 172.16.1.126
+standby 8 priority 102
+standby 8 preempt
+standby 8 track g0/0/1
+
+int g0/0/0.100
+standby 100 ip 172.16.0.238
+standby 100 priority 102
+standby 100 preempt
+standby 100 track g0/0/1
+
+Core2
+int g0/0/0.2
+standby 2 ip 172.16.1.190
+
+
+int g0/0/0.4
+standby 4 ip 172.16.1.222
+
+
+int g0/0/0.6
+standby 6 ip 172.16.0.254
+
+
+int g0/0/0.8
+standby 8 ip 172.16.1.126
+
+
+int g0/0/0.100
+standby 100 ip 172.16.0.238
+
+
+

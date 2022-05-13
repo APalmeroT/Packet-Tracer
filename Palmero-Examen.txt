@@ -1,0 +1,23 @@
+display name de la Vlan 20 CC
+Multilayer Switch0
+
+switch1
+enable
+configure term
+hostname Sw1
+spanning-tree vlan 2,4,6,8
+
+
+en mi pc6 
+-comant prompt
+-ip address 222.222.222.2
+FTP 222.222.222.2
+get letras.txt
+Text Editor file open letras;txt
+sala de juntas cambie el cable para conectarlo bien
+
+sw4 
+enable
+config term
+interface fa0/24
+no shutdown
