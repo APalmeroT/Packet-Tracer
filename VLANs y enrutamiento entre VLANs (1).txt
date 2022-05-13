@@ -1,0 +1,152 @@
+1. Crear las VLAN
+ED1,ED2,ED3,CORE**********
+vlan 2
+name LAB1
+vlan 3
+name LAB2
+vlan 99
+name SERVIDORES
+vlan 100 
+name ADMIN
+vlan 101
+name NATIVA
+
+2. Asociar los puertos del switch a la VLAN correspondiente(puertos de acceso)
+
+ED1********
+int range fa0/1-2
+switchport mode access
+switchport access vlan 2
+
+int range fa0/3
+switchport mode access
+switchport access vlan 2
+
+ED2**************
+int range fa0/1-2
+switchport mode access
+switchport access vlan 3
+
+int range fa0/3
+switchport mode access
+switchport access vlan 3
+
+ED3*********
+int range fa0/1-2
+switchport mode access
+switchport access vlan 99
+
+int range fa0/3
+switchport mode access
+switchport access vlan 99
+
+
+3. Habilitar los enlaces troncales
+
+ED1,ED2,ED3********
+
+int range g0/1-2
+switchport mode trunk
+switchport trunk native vlan 101
+switchport trunk allowed vlan 2,3,99,100,101
+switchport nonegative
+
+CORE*********
+int range g0/1
+switchport mode trunk
+switchport trunk native vlan 101
+switchport trunk allowed vlan 2,3,99,100,101
+switchport nonegative
+
+ED2--------
+INT FA0/24
+sw mode trunk
+sw trunk native vlan 101
+sw trunk all vlan 2,3,99,100,101
+sw non
+
+CORE-------
+INT FA0/23-24
+sw mode trunk
+sw trunk native vlan 101
+sw trunk all vlan 2,3,99,100,101
+sw non
+
+
+comando para verificar que la vlan nativa esté activa---> sh int tru
+
+
+
+4. Configurar direccionamiento IP
+
+CORE***
+int vlan 100
+ip add 200.200.1.113 255.255.255.248
+no shut
+
+ip defa 200.200.1.254
+
+ED1***
+int vlan 100
+ip add 200.200.1.114 255.255.255.248
+no shut
+
+ip defa 200.200.1.254
+
+ED2***
+int vlan 100
+ip add 200.200.1.115 255.255.255.248
+no shut
+
+ip defa 200.200.1.254
+
+ED3***
+int vlan 100
+ip add 200.200.1.116 255.255.255.248
+no shut
+
+ip defa 200.200.1.254
+
+
+5. Configurar Router-on-a-stick, para agregar las subintefaces de las VLANs
+
+int g0/0/0.2
+encapsulation dot1q 2
+ip address 200.200.1.254 255.255.255.192
+
+int g0/0/0.3
+encapsulation dot1q 3
+ip address 200.200.1.254 255.255.255.224
+
+int g0/0/0.99
+encapsulation dot1q 99
+ip address 200.200.1.254 255.255.255.240
+
+int g0/0/0.100
+encapsulation dot1q 100
+ip address 200.200.1.254 255.255.255.248
+
+int g0/0/0
+no shutdown
+
+
+ROUTER
+ipv6 unicast-routing
+
+int g0/0/0.2
+ipv6 address 2001:db8:cafe:2::1/64
+
+int g0/0/0.3
+ipv6 address 2001:db8:cafe:3::1/64
+
+int g0/0/0.99
+ipv6 address 2001:db8:cafe:99::1/64
+
+int g0/0/0.100
+ipv6 address 2001:db8:cafe:100::1/64
+
+
+
+
+
+
